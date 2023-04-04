@@ -5,7 +5,16 @@ name = "pypi"
 
 [packages]
 fastapi = "*"
-uvicorn = {extras = ["standard"], version = "*"}
+uvicorn = "*"
+fastapi-sqlalchemy = "*"
+alembic = "*"
+bcrypt = "*"
+psycopg2 = "*"
+python-jose = "*"
+passlib = "*"
+replit = "*"
+python-multipart = "*"
+email-validator = "*"
 
 [dev-packages]
 
