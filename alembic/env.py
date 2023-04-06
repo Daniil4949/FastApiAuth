@@ -10,7 +10,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-config.set_main_option("sqlalchemy.url", "postgresql+psycopg2://postgres:postgres@db:5432/postgres")
+config.set_main_option("sqlalchemy.url",
+                       os.getenv("DB_URL", "postgresql+psycopg2://postgres:postgres@db:5432/postgres"))
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 if config.config_file_name is not None:

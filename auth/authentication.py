@@ -1,11 +1,11 @@
 from fastapi import status, HTTPException, APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from auth.schemas import UserOut, UserAuth, TokenSchema, RefreshToken, TokenPayload, AccessToken
-from app.db import get_email, add_new_user, get_username
+from auth.orm_commands import get_email, get_username, add_new_user
 from auth.tokens import get_hashed_password, verify_password, create_access_token, create_refresh_token
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
-from auth.tokens import JWT_REFRESH_SECRET_KEY, ALGORITHM
+from auth.tokens import JWT_REFRESH_SECRET_KEY, JWT_SECRET_KEY, ALGORITHM
 from pydantic import ValidationError
 
 router = APIRouter(
@@ -76,5 +76,21 @@ async def get_new_data(data: RefreshToken):
             return {
                 "access_token": create_access_token(user_email["email"]),
             }
+    except (jwt.JWTError, ValidationError):
+        raise HTTPException(detail="Something went wrong", status_code=status.HTTP_403_FORBIDDEN)
+
+
+@router.post("/verify", summary="Just be confident that your access token is valid")
+async def verify(data: AccessToken):
+    try:
+        payload = jwt.decode(
+            data.access_token, JWT_SECRET_KEY, algorithms=[ALGORITHM]
+        )
+        token_data = TokenPayload(**payload)
+        user_email = get_email(token_data.sub)
+        if user_email is None:
+            raise HTTPException(detail="User with this email does not exist", status_code=status.HTTP_403_FORBIDDEN)
+        else:
+            return status.HTTP_200_OK
     except (jwt.JWTError, ValidationError):
         raise HTTPException(detail="Something went wrong", status_code=status.HTTP_403_FORBIDDEN)
