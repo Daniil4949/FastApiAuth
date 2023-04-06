@@ -7,7 +7,6 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
 from auth.tokens import JWT_REFRESH_SECRET_KEY, JWT_SECRET_KEY, ALGORITHM
 from pydantic import ValidationError
-from typing import Annotated
 
 router = APIRouter(
     prefix="/auth",
