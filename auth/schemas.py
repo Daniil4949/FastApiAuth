@@ -1,5 +1,5 @@
 from uuid import UUID
-from pydantic import BaseModel, Field, validate_email, validator, EmailStr
+from pydantic import BaseModel, Field, EmailStr
 
 
 class TokenSchema(BaseModel):
